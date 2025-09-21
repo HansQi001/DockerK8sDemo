@@ -1,3 +1,11 @@
+using Azure;
+using Azure.Core;
+using Microsoft.Azure.Cosmos;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text.Json;
+using System.Web;
+using static Azure.Core.HttpHeader;
 
 namespace DockerK8sDemo.APIApp
 {
@@ -14,6 +22,13 @@ namespace DockerK8sDemo.APIApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Register CosmosClient as a singleton
+            builder.Services.AddSingleton(sp =>
+            {
+                var connectionString = Environment.GetEnvironmentVariable("CosmosDBConnection");
+                return new CosmosClient(connectionString, new CosmosClientOptions { AllowBulkExecution = true });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,27 +42,82 @@ namespace DockerK8sDemo.APIApp
 
             app.UseAuthorization();
 
-            var summaries = new[]
+            app.MapGet("/api/products", async (HttpContext httpContext
+                , CosmosClient cosmosClient) =>
             {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
+                httpContext.Response.Headers["Content-Type"] = "application/x-ndjson";
 
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
+                var container = cosmosClient
+                                .GetDatabase("ServerlessDemo")
+                                .GetContainer("Products");
+
+                await using var writer = new StreamWriter(httpContext.Response.Body);
+                using var feedIterator = container.GetItemQueryIterator<Product>(
+                    $"SELECT * FROM c");
+
+                while (feedIterator.HasMoreResults)
+                {
+                    var page = await feedIterator.ReadNextAsync();
+                    foreach (var product in page)
                     {
-                        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
+                        //var dto = _mapper.Map(product).ToANew<ProductSummaryDTO>();
+                        // Serialize each product as JSON and write immediately
+                        var json = System.Text.Json.JsonSerializer.Serialize(product, new JsonSerializerOptions
+                        {
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                        });
+                        await writer.WriteLineAsync(json);
+                        // push chunk to client
+                        await writer.FlushAsync();
+                    }
+                }
             })
-            .WithName("GetWeatherForecast")
+            .WithName("GetAllProducts")
             .WithOpenApi();
+
+            app.MapGet("/api/products/{id}", async (string id, CosmosClient cosmosClient) =>
+            {
+                var container = cosmosClient.GetDatabase("ServerlessDemo").GetContainer("Products");
+
+                try
+                {
+                    var response = await container.ReadItemAsync<Product>(id, new PartitionKey(id));
+                    return Results.Ok(response.Resource);
+                }
+                catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return Results.NotFound();
+                }
+
+            })
+            .WithName("ProductDetails")
+            .WithOpenApi(); ;
 
             app.Run();
         }
+    }
+
+    public class Product
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        [JsonProperty("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonProperty("price")]
+        public decimal Price { get; set; }
+
+        [JsonProperty("stock")]
+        public int Stock { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; } = "Active";
+
+        [JsonProperty("createdAt")]
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+        [JsonProperty("lastModifiedAt")]
+        public DateTimeOffset? LastModifiedAt { get; set; }
     }
 }
