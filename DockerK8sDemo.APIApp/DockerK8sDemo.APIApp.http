@@ -1,0 +1,6 @@
+@DockerK8sDemo.APIApp_HostAddress = http://localhost:5041
+
+GET {{DockerK8sDemo.APIApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
