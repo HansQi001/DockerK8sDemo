@@ -9,4 +9,5 @@ The deployment pipeline covers:
 - Publishing the image to **Azure Container Registry (ACR)**
 - Deploying to **AKS** using Kubernetes manifests
 - Exposing the application via a public endpoint for demo purposes  
-  http://hans-dockerk8s-demo.australiaeast.cloudapp.azure.com/weatherforecast
+  http://hans-dockerk8s-demo.australiaeast.cloudapp.azure.com/api/products/ (via Postman)  
+  http://hans-dockerk8s-demo.australiaeast.cloudapp.azure.com/api/products/79c4e77d-fff4-4345-ac34-3a46137b1e92
