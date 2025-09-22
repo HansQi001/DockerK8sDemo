@@ -11,3 +11,5 @@ The deployment pipeline covers:
 - Exposing the application via a public endpoint for demo purposes  
   http://hans-dockerk8s-demo.australiaeast.cloudapp.azure.com/api/products/ (via Postman)  
   http://hans-dockerk8s-demo.australiaeast.cloudapp.azure.com/api/products/79c4e77d-fff4-4345-ac34-3a46137b1e92
+- Restart AKS pod  
+  kubectl rollout restart deployment dockerk8sdemoapiapp -n default-1758294228254
