@@ -93,6 +93,9 @@ namespace DockerK8sDemo.APIApp
             .WithName("ProductDetails")
             .WithOpenApi(); ;
 
+            app.MapGet("/api/version", () => Results.Ok("1.0")).WithName("APIVersion")
+            .WithOpenApi(); ;
+
             app.Run();
         }
     }
