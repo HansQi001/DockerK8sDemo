@@ -1,0 +1,200 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dockerk8sdemoapiapp
+  namespace: default-1758294228254
+  uid: 7d0a2f13-6368-423e-af9c-b57bc0a8e549
+  resourceVersion: '1215598'
+  generation: 6
+  creationTimestamp: '2025-09-19T15:04:32Z'
+  annotations:
+    deployment.kubernetes.io/revision: '5'
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"dockerk8sdemoapiapp","namespace":"default-1758294228254"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"dockerk8sdemoapiapp"}},"template":{"metadata":{"labels":{"app":"dockerk8sdemoapiapp"}},"spec":{"containers":[{"image":"dockerk8sdemoapiapp20250919115743.azurecr.io/dockerk8sdemoapiapp:latest","imagePullPolicy":"Always","name":"dockerk8sdemoapiapp","ports":[{"containerPort":8080}],"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}],"nodeSelector":{"kubernetes.io/os":"linux"}}}}}
+  managedFields:
+    - manager: kubectl-client-side-apply
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-09-22T02:32:01Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-09-22T02:55:12Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:progressDeadlineSeconds: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:strategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+            f:spec:
+              f:containers:
+                k:{"name":"dockerk8sdemoapiapp"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"CosmosDBConnection"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8080,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:nodeSelector: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:terminationGracePeriodSeconds: {}
+    - manager: kubectl-rollout
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-09-22T03:20:56Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:kubectl.kubernetes.io/restartedAt: {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2025-09-22T03:21:00Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/revision: {}
+        f:status:
+          f:availableReplicas: {}
+          f:conditions:
+            .: {}
+            k:{"type":"Available"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Progressing"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:updatedReplicas: {}
+      subresource: status
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockerk8sdemoapiapp
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dockerk8sdemoapiapp
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '2025-09-22T13:20:55+10:00'
+    spec:
+      containers:
+        - name: dockerk8sdemoapiapp
+          image: >-
+            dockerk8sdemoapiapp20250919115743.azurecr.io/dockerk8sdemoapiapp:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CosmosDBConnection
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb-secret
+                  key: CosmosDBConnection
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+status:
+  observedGeneration: 6
+  replicas: 1
+  updatedReplicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2025-09-19T15:04:34Z'
+      lastTransitionTime: '2025-09-19T15:04:34Z'
+      reason: MinimumReplicasAvailable
+      message: Deployment has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2025-09-22T03:21:00Z'
+      lastTransitionTime: '2025-09-19T15:04:32Z'
+      reason: NewReplicaSetAvailable
+      message: ReplicaSet "dockerk8sdemoapiapp-7dcbcd6975" has successfully progressed.
