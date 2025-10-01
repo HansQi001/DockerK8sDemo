@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockerk8sdemoapiapp
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockerk8sdemoapiapp
+  template:
+    metadata:
+      labels:
+        app: dockerk8sdemoapiapp
+    spec:
+      containers:
+      - name: dockerk8sdemoapiapp
+        image: dockerk8sdemoapiapp20250919115743.azurecr.io/dockerk8sdemoapiapp:latest
+        ports:
+        - containerPort: 8080
