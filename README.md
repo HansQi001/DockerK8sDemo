@@ -8,14 +8,14 @@ az ad sp create-for-rbac --name "gh-actions" /
 --scopes $(az acr show --name DockerK8sDemoAPIApp20250919115743 --query id -o tsv)
 ```
 
-3. **Get the kubelet identity of your AKS cluster**  
+3. **Get the kubelet identity of the AKS cluster**  
 ```Powershell
 az aks show --resource-group k8s-group /
 --name mini-API-demo /
 --query identityProfile.kubeletidentity.clientId -o tsv
 ```
 
-3. **Assign AcrPull role to that identity on your ACR**  
+3. **Assign AcrPull role to that identity on the ACR**  
 ```Powershell
 az role assignment create /
 --assignee <kubelet-id> /
@@ -32,7 +32,7 @@ az role assignment create /
 --scope $(az aks show --name mini-API-demo --resource-group k8s-group --query id -o tsv)
 ```
 
-5. **Merge your AKS cluster credentials into ~/.kube/config**  
+5. **Merge the AKS cluster credentials into ~/.kube/config**  
 ```Powershell
 az aks get-credentials --resource-group k8s-group --name mini-API-demo --overwrite-existing
 ```
