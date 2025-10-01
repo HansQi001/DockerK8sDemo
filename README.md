@@ -1,5 +1,5 @@
 # Docker & Kubernetes Deployment Demo  
-## Automation from GitHub to ACR then AKS  
+- ## Automation from GitHub to ACR then AKS  
 1. **Create a Kubernetes cluster named "mini-API-demo" under resource group "k8s-group"**
 2. **Create a Service Principal with secret:**  
 ```Powershell
@@ -37,7 +37,7 @@ az role assignment create /
 az aks get-credentials --resource-group k8s-group --name mini-API-demo --overwrite-existing
 ```
 
-## From Visual Studio 2022 → Azure Container Registry (ACR) → Azure Kubernetes Service (AKS)
+- ## From Visual Studio 2022 → Azure Container Registry (ACR) → Azure Kubernetes Service (AKS)
 
 ### 📌 Overview
 This project demonstrates a complete containerized deployment workflow using **Docker** and **Kubernetes**, starting from local development in **Visual Studio 2022** and ending with a live application running on **Azure Kubernetes Service (AKS)**.
