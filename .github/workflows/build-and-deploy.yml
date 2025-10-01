@@ -7,10 +7,10 @@ on:
 
 env:
   REGISTRY_NAME: dockerk8sdemoapiapp20250919115743          # ACR name (without .azurecr.io)
-  IMAGE_NAME: dockerk8sdemoapiapp                 # image repo name
-  RESOURCE_GROUP: rg-miniAPI-demo             # AKS resource group
+  IMAGE_NAME: dockerk8sdemoapiapp                 # ACR image repo name
+  RESOURCE_GROUP: rg-miniAPI-demo             # ACR resource group
   CLUSTER_NAME: mini-API-demo      # AKS cluster name
-  CLUSTER_RESOURCE_GROUP: k8s-group
+  CLUSTER_RESOURCE_GROUP: k8s-group  # AKS cluster group
   NAMESPACE: default                  # or your target namespace
 
 jobs:
@@ -25,11 +25,6 @@ jobs:
       uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        ### Create a Service Principal with secret:
-        # az ad sp create-for-rbac \
-        # --name "gh-actions" \
-        # --role AcrPush \
-        # --scopes $(az acr show --name <cluster-name> --query id -o tsv)
 
     - name: Log in to ACR
       run: |
@@ -60,11 +55,4 @@ jobs:
         kubectl apply -f manifests/deployment.yaml
         kubectl apply -f manifests/service.yaml
         kubectl rollout status deployment dockerk8sdemoapiapp
-
-
-
-    # - name: Deploy to AKS
-    #   run: |
-    #     kubectl set image deployment/dockerk8sdemoapiapp dockerk8sdemoapiapp=$REGISTRY_NAME.azurecr.io/$IMAGE_NAME:${{ env.IMAGE_TAG }} -n $NAMESPACE
-    #     kubectl rollout status deployment/dockerk8sdemoapiapp -n $NAMESPACE
 
